@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="./css/bootstrap.css" rel="stylesheet">
+    <link href="./css/footer.css" rel="stylesheet">
+    <title>Loyalty - Senate</title>
+</head>
+
+<body>
+    <div class="container">
+
+        <nav>
+            <div class="row">
+                <div class="span1">
+                    <IMG width="50%" src="./img/TGIF_Logo.png">
+                </div>
+                <div class="span2 offset-11">
+                    <a href="mailto:info@tgif.net">
+                        info@tgif.net
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span3 navbar"><A href="home-starter-page.html">Home</A></div>
+                <div class="dropdown navbar">
+                    <div class="dropdown-toggle" data-toggle="dropdown">Congress 113</div>
+                    <ul class="dropdown-menu">
+                        <li><A href="house-starter-page.html">House</A></li>
+                        <li><A href="senate-starter-page.html">Senate</A></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown navbar">
+                    <div class="dropdown-toggle" data-toggle="dropdown">Attendance</div>
+                    <ul class="dropdown-menu">
+                        <li><A href="house-attendance-starter-page.html">House</A></li>
+                        <li><A href="senate-attendance-starter-page.html">Senate</A></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown navbar">
+                    <div class="dropdown-toggle" data-toggle="dropdown">Party Loyalty</div>
+                    <ul class="dropdown-menu">
+                        <li><A href="house-party-loyalty-starter-page.html">House</A></li>
+                        <li><A href="senate-party-loyalty-starter-page.html">Senate</A></li>
+                    </ul>
+                </div>
+
+
+                <div class="span2 offset-4"></div>
+            </div>
+
+        </nav>
+
+        <header>
+            <div>
+            </div>
+        </header>
+
+        <!--Table container-->
+        <div class="row pt-5">
+            <div class="col-sm">
+                <h3>Party Loyalty</h3>
+                <p>Those who consider themselves to be strong partisans, strong Democrats and strong Republicans
+                    respectively, tend to be the most faithful in voting for their party's nominee for office and
+                    legislation that backs their party's agenda. </p>
+            </div>
+
+            <div class="col-sm">
+
+                <h2>Senate at a glance</h2>
+                <table class="table">
+
+                    <tbody id="glanceTable">
+                        <tr>
+                            <th>Party</th>
+                            <th>Number</th>
+                            <th>Votes in %</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row pt-5">
+            <div class="col-sm">
+
+                <h4>Least Loyal (Bottom 10% of Party)</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Number Party Votes</th>
+                            <th>% Party Votes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableLeft">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <h4>Most Loyal (Top 10% of Party)</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Number Party Votes</th>
+                            <th>% Party Votes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableRight">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+        <div class="container text-center">
+            <small>Copyright &copy; Your Website</small>
+        </div>
+    </footer>
+
+
+    <script src="./js/jquery-3.4.1.js"></script>
+    <script src="./js/bootstrap.js"></script>
+    <!-- <script src="./js/pro-congress-113-senate.js"></script> -->
+    <script src="./js/statistics.js"></script>
+    <script src="./js/tables.js"></script>
+
+</body>
+
+</html>
