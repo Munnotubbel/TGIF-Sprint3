@@ -86,7 +86,7 @@ function tableFunction(members) {
         if (typeof members[z].votes_with_party_pct == "undefined") {
             vote = "-"
         } else {
-            vote = members[z].votes_with_party_pct + " %"
+            vote = (members[z].votes_with_party_pct * 100)
         }
 
         let missedVotes = 0
@@ -100,7 +100,7 @@ function tableFunction(members) {
         if (typeof members[z].missed_votes_pct == "undefined") {
             missedVotesPct = "-"
         } else {
-            missedVotesPct = members[z].missed_votes_pct + " %"
+            missedVotesPct = members[z].missed_votes_pct * 100
         }
 
         let numPartyVotes = roundfull(((members[z].votes_with_party_pct / 100) * ((1 - ((members[z].missed_votes_pct) / 100)) * (members[z].total_votes))));
@@ -226,7 +226,7 @@ function callGlanceTable(members) {
         row.appendChild(cell2);
         cell2.innerHTML = statG[k].number;
         row.appendChild(cell3);
-        cell3.innerHTML = statG[k].percent;
+        cell3.innerHTML = statG[k].percent + " %";
 
     }
 }
@@ -276,8 +276,10 @@ function attendance(members) {
                 "</a>";
             row.appendChild(cell2);
             cell2.innerHTML = arrInput[e].miVo;
-            row.appendChild(cell3);
-            cell3.innerHTML = arrInput[e].miVo_PCT;
+            if (arrInput[e].miVo_PCT !== "-") {
+                row.appendChild(cell3);
+                cell3.innerHTML = arrInput[e].miVo_PCT / 100 + " %";
+            }
         }
     }
     fillAttendanceTables(table1, stats.attendance_low);
@@ -336,7 +338,10 @@ function loyalty(members) {
             row.appendChild(cell2Loy);
             cell2Loy.innerHTML = arrInput[e].nuPaVo;
             row.appendChild(cell3Loy);
-            cell3Loy.innerHTML = arrInput[e].voWiPa_PCT;
+            if (arrInput[e].voWiPa_PCT !== "-") {
+                cell3Loy.innerHTML = (arrInput[e].voWiPa_PCT / 100) + " %"
+            }
+
         }
     }
     fillLoyaltyTables(table1, stats.loyalty_low);
