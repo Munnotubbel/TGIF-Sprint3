@@ -1,44 +1,94 @@
-async function getData() {
-    const response = await fetch(
-        "https://api.propublica.org/congress/v1/115/senate/members.json", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
+async function getDataSen() {
+    if (document.title === "Congress 113 - Senate" || document.title === "Attendance - Senate" || document.title === "Loyalty - Senate") {
+
+        const response = await fetch(
+            "https://api.propublica.org/congress/v1/115/senate/members.json", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
+                }
             }
+        );
+        var data = await response.json();
+        var members = data.results[0].members;
+        tableFunction(members)
+        var puffpuff = stats.mem;
+
+        if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
+            addMemberTable(stats.mem)
+
+        };
+
+        if (document.title === "Attendance - Senate" || document.title === "Attendance - House" ||
+            document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
+            callGlanceTable(members)
         }
-    );
-    var data = await response.json();
-    var members = data.results[0].members;
-    tableFunction(members)
-    var puffpuff = stats.mem;
 
-    if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
-        addMemberTable(stats.mem)
+        if (document.title === "Attendance - Senate" || document.title === "Attendance - House") {
+            attendance(members)
+        }
 
-    };
+        if (document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
 
-    if (document.title === "Attendance - Senate" || document.title === "Attendance - House" ||
-        document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
-        callGlanceTable(members)
+            loyalty(members)
+        }
+        if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
+            buildFilter(members);
+            createEvent(puffpuff)
+            /* change(members); */
+        }
+        console.log("puffpuff länge" + puffpuff.length)
+        console.log("Fetch Live Erfolgreich Beendet")
+        //------------------------------------
     }
+};
 
-    if (document.title === "Attendance - Senate" || document.title === "Attendance - House") {
-        attendance(members)
-    }
 
-    if (document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
 
-        loyalty(members)
+async function getDataHou() {
+    if (document.title === "Congress 113 - House" || document.title === "Attendance - House" || document.title === "Loyalty - House") {
+        const response = await fetch(
+            "https://api.propublica.org/congress/v1/115/house/members.json", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
+                }
+            }
+        );
+        var data = await response.json();
+        var members = data.results[0].members;
+        tableFunction(members)
+        var puffpuff = stats.mem;
+
+        if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
+            addMemberTable(stats.mem)
+
+        };
+
+        if (document.title === "Attendance - Senate" || document.title === "Attendance - House" ||
+            document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
+            callGlanceTable(members)
+        }
+
+        if (document.title === "Attendance - Senate" || document.title === "Attendance - House") {
+            attendance(members)
+        }
+
+        if (document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
+
+            loyalty(members)
+        }
+        if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
+            buildFilter(members);
+            createEvent(puffpuff)
+            /* change(members); */
+        }
+        console.log("puffpuff länge" + puffpuff.length)
+        console.log("Fetch Live Erfolgreich Beendet")
+        //------------------------------------
     }
-    if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
-        buildFilter(members);
-        createEvent(puffpuff)
-        /* change(members); */
-    }
-    console.log("puffpuff länge" + puffpuff.length)
-    console.log("Fetch Live Erfolgreich Beendet")
-    //------------------------------------
 }
 
 
@@ -243,20 +293,65 @@ function attendance(members) {
 
     // -------- Sort and Push it into low and high array -----------
 
+
+    /*   result_low.sort((a, b) => {
+          return a.miVo_PCT < b.miVo_PCT ? 1 : -1;
+      }); */
     stats.attendance.sort((a, b) => {
-        return a.miVo_PCT < b.miVo_PCT ? 1 : -1;
+        return a.miVo_PCT * 100 < b.miVo_PCT * 100 ? 1 : -1;
     });
-    for (var b = 0; b < members.length / 10; b++) {
-        stats.attendance_low.push(stats.attendance[b]);
+    var result = stats.attendance.reduce((unique, o) => {
+        if (!unique.some(obj => obj.miVo_PCT === o.miVo_PCT)) {
+            unique.push(o);
+        }
+        return unique;
+    }, []);
+    /*  var bm = Math.round(result.length / 10)
+     var bot_max = result[bm].miVo_PCT
+     console.log(bot_max)
+     var tm = result.length - bm
+     var top_max = result[tm].miVo_PCT
+     console.log(top_max) */
+
+    /* var x = (Math.round(result_low.length / 10));
+
+    for (var i = 0; stats.attendance[i] === result_low[x]; i++) {
+        console.log(i)
     }
+
+
+    console.log(result_low[x].miVo_PCT)
+
+    console.log(stats.attendance)
+    console.log("-----------------------------------") */
+    console.log(stats.attendance)
+    var d = 0;
+    for (var b = 0; b < (result.length) * 0.1 + d; b++) {
+        for (var c = 1; c < (result.length) * 0.1; c++) {
+            if (stats.attendance[b].miVo_PCT == stats.attendance[c].miVo_PCT) {
+                d++
+            }
+        }
+        stats.attendance_low.push(stats.attendance[b])
+
+    }
+    console.log(stats.attendance)
+
     stats.attendance.sort((a, b) => {
         return a.miVo_PCT * 100 > b.miVo_PCT * 100 ? 1 : -1;
     });
+    var e = 0;
+    for (var b = 0; b < (result.length) * 0.1 + e; b++) {
+        for (var c = 1; c < (result.length) * 0.1; c++) {
+            if (stats.attendance[b].miVo_PCT == stats.attendance[c].miVo_PCT) {
+                e++
+            }
+        }
+        stats.attendance_max.push(stats.attendance[b])
 
-
-    for (var b = 0; b < members.length / 10; b++) {
-        stats.attendance_max.push(stats.attendance[b]);
     }
+
+
     //-------------------- Fill Tables--------------------
     function fillAttendanceTables(tableID, arrInput) {
         for (var e = 0; e < arrInput.length; e++) {
@@ -301,19 +396,36 @@ function loyalty(members) {
         }
 
     stats.loyalty.sort((a, b) => {
-        return (a.voWiPa_PCT > b.voWiPa_PCT) ? 1 : -1
-    })
+        return a.voWiPa_PCT * 100 < b.voWiPa_PCT * 100 ? 1 : -1;
+    });
+    var result = stats.loyalty.reduce((unique, o) => {
+        if (!unique.some(obj => obj.miVo_PCT === o.miVo_PCT)) {
+            unique.push(o);
+        }
+        return unique;
+    }, []);
+    var e = 0
 
-    for (var c = 0; c < ((members.length) / 10); c++) {
-        stats.loyalty_low.push(stats.loyalty[c])
+    for (var j = 0; j < ((result.length) / 10) + e; j++) {
+        for (var k = 0; k < ((result.length) / 10) + e; k++) {
+            if (stats.loyalty[j].voWiPa_PCT == stats.loyalty[k].voWiPa_PCT) {
+                e++
+            }
+        }
+        stats.loyalty_low.push(stats.loyalty[j])
     };
 
     stats.loyalty.sort((a, b) => {
-        return (a.voWiPa_PCT < b.voWiPa_PCT) ? 1 : -1
+        return (a.voWiPa_PCT * 100 < b.voWiPa_PCT * 100) ? 1 : -1
     })
 
-
-    for (var c = 0; c < ((members.length) / 10); c++) {
+    var f = 0;
+    for (var c = 0; c < ((result.length) / 10) + f; c++) {
+        for (d = 0; d < ((result.length) / 10) + f; d++) {
+            if (stats.loyalty[c].voWiPa_PCT == stats.loyalty[d].voWiPa_PCT) {
+                e++
+            }
+        }
         stats.loyalty_max.push(stats.loyalty[c])
     };
 
@@ -435,12 +547,17 @@ function change(puffpuff) {
 
         if (filterArr.length === 0 && puffpuff.length === 0) {
             filteredMembers.push((puffpuff[zl]))
+
         } else if (filterArr.length > 0 && stateArr.length === 0 && filterArr.includes(puffpuff[zl].party)) {
             filteredMembers.push((puffpuff[zl]))
+
         } else if (filterArr.length === 0 && stateArr.length > 0 && stateArr.includes(puffpuff[zl].state)) {
             filteredMembers.push((puffpuff[zl]))
-        } else if (filterArr.length > 0 && stateArr.length > 0 && stateArr.includes(puffpuff[zl].state) && filterArr.includes(puffpuff[zl].party)) {
+
+        } else if (filterArr.length > 0 && stateArr.length > 0 &&
+            stateArr.includes(puffpuff[zl].state) && filterArr.includes(puffpuff[zl].party)) {
             filteredMembers.push((puffpuff[zl]))
+
 
         }
 
@@ -452,4 +569,5 @@ function change(puffpuff) {
 
 
 
-getData();
+getDataSen();
+getDataHou();
