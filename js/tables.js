@@ -26,19 +26,18 @@ async function getDataSen() {
         }
 
         if (document.title === "Attendance - Senate" || document.title === "Attendance - House") {
-            attendance(members)
+            attendance('miVo_PCT', 'miVo')
         }
 
         if (document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
 
-            loyalty(members)
+            attendance('voWiPa_PCT', 'nuPaVo')
         }
         if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
             buildFilter(members);
             createEvent(puffpuff)
             /* change(members); */
         }
-        console.log("puffpuff länge" + puffpuff.length)
         console.log("Fetch Live Erfolgreich Beendet")
         //------------------------------------
     }
@@ -48,15 +47,13 @@ async function getDataSen() {
 
 async function getDataHou() {
     if (document.title === "Congress 113 - House" || document.title === "Attendance - House" || document.title === "Loyalty - House") {
-        const response = await fetch(
-            "https://api.propublica.org/congress/v1/115/house/members.json", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
-                }
+        const response = await fetch("https://api.propublica.org/congress/v1/115/house/members.json", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
             }
-        );
+        });
         var data = await response.json();
         var members = data.results[0].members;
         tableFunction(members)
@@ -73,19 +70,19 @@ async function getDataHou() {
         }
 
         if (document.title === "Attendance - Senate" || document.title === "Attendance - House") {
-            attendance(members)
+            attendance('miVo_PCT', 'miVo')
         }
 
         if (document.title === "Loyalty - Senate" || document.title === "Loyalty - House") {
 
-            loyalty(members)
+            attendance('voWiPa_PCT', 'nuPaVo')
         }
         if (document.title === "Congress 113 - Senate" || document.title === "Congress 113 - House") {
             buildFilter(members);
             createEvent(puffpuff)
             /* change(members); */
         }
-        console.log("puffpuff länge" + puffpuff.length)
+
         console.log("Fetch Live Erfolgreich Beendet")
         //------------------------------------
     }
@@ -120,7 +117,7 @@ var table2 = "tableRight"
 
 
 
-//---------------------create member Table function ---------
+//--------------create member Table function ------------------------------create member Table function
 function tableFunction(members) {
 
 
@@ -176,7 +173,7 @@ function tableFunction(members) {
 
 
 
-//---------------------Add Data function ---------
+//---------------------Add Data function ------------------------------------Add Data function
 function addMemberTable(whichArr) {
     for (var e = 0; e < whichArr.length; e++) {
         var table = document.getElementById("table");
@@ -205,51 +202,37 @@ function addMemberTable(whichArr) {
 
 
 
-//---------------Glance tables-------------------------------------------------
+//---------------Glance tables-------------------------------------------------Glance tables
 
 function callGlanceTable(members) {
-
-    /*--------------------- Numbers of Party overall----------------*/
     var statG = stats.Glance;
-    for (var i = 0; i < members.length; i++) {
-        if (members[i].party === "R") {
-            ++statG[1].number;
-        } else if (members[i].party === "D") {
-            ++statG[0].number;
-        } else {
-            ++statG[2].number;
-        }
-    }
-    console.log()
-    statG[3].number =
-        statG[0].number + statG[1].number + statG[2].number;
-
-    /*----------------- voWiPa_PCT with party ---------------*/
     var vwpHD = 0;
     var vwpHD = 0;
     var vwpHR = 0;
     var vwpHI = 0;
     for (var j = 0; j < members.length; j++) {
         if (members[j].party === "D") {
+            ++statG[0].number;
             if (typeof members[j].votes_with_party_pct != "undefined") {
                 vwpHD += members[j].votes_with_party_pct;
             }
         } else if (members[j].party === "R") {
+            ++statG[1].number;
             if (typeof members[j].votes_with_party_pct != "undefined") {
                 vwpHR += members[j].votes_with_party_pct;
             }
         } else {
+            ++statG[2].number;
             if (typeof members[j].votes_with_party_pct != "undefined") {
                 vwpHI += members[j].votes_with_party_pct;
             }
         }
     }
-
+    statG[3].number =
+        statG[0].number + statG[1].number + statG[2].number;
     statG[0].percent = round(vwpHD / statG[0].number);
     statG[1].percent = round(vwpHR / statG[1].number);
     var y = vwpHI / statG[2].number;
-
-
 
     if (statG[2].number === 0) {
         statG[2].percent = 0;
@@ -282,78 +265,67 @@ function callGlanceTable(members) {
 }
 console.log("Glance Table Erfolgreich")
 
-//------------Attendance-------------------------------------------------------------
+//------------10% Tables-------------------------------------------------------------10% Tables
 
-function attendance(members) {
+function attendance(spalte3Wert, spalte2Wert) {
     for (var z = 0; z < stats.mem.length; z++)
-        if (stats.mem[z].miVo_PCT !== "-") {
-            stats.attendance.push(stats.mem[z])
+        if (stats.mem[z][spalte3Wert] !== "-") {
+            stats.gabArr.push(stats.mem[z])
 
         }
 
-    // -------- Sort and Push it into low and high array -----------
-
-
-    /*   result_low.sort((a, b) => {
-          return a.miVo_PCT < b.miVo_PCT ? 1 : -1;
-      }); */
-    stats.attendance.sort((a, b) => {
-        return a.miVo_PCT * 100 < b.miVo_PCT * 100 ? 1 : -1;
-    });
-    var result = stats.attendance.reduce((unique, o) => {
-        if (!unique.some(obj => obj.miVo_PCT === o.miVo_PCT)) {
+    var result = stats.gabArr.reduce((unique, o) => {
+        if (!unique.some(obj => obj[spalte3Wert] === o[spalte3Wert])) {
             unique.push(o);
         }
         return unique;
     }, []);
-    /*  var bm = Math.round(result.length / 10)
-     var bot_max = result[bm].miVo_PCT
-     console.log(bot_max)
-     var tm = result.length - bm
-     var top_max = result[tm].miVo_PCT
-     console.log(top_max) */
 
-    /* var x = (Math.round(result_low.length / 10));
-
-    for (var i = 0; stats.attendance[i] === result_low[x]; i++) {
-        console.log(i)
+    if (document.title === "Attendance - Senate" || document.title === "Attendance - House") {
+        stats.gabArr.sort((a, b) => {
+            return a[spalte3Wert] * 100 < b[spalte3Wert] * 100 ? 1 : -1;
+        });
+    } else {
+        stats.gabArr.sort((a, b) => {
+            return a[spalte3Wert] * 100 > b[spalte3Wert] * 100 ? 1 : -1;
+        });
     }
 
 
-    console.log(result_low[x].miVo_PCT)
-
-    console.log(stats.attendance)
-    console.log("-----------------------------------") */
-    console.log(stats.attendance)
     var d = 0;
     for (var b = 0; b < (result.length) * 0.1 + d; b++) {
         for (var c = 1; c < (result.length) * 0.1; c++) {
-            if (stats.attendance[b].miVo_PCT == stats.attendance[c].miVo_PCT) {
+            if (stats.gabArr[b][spalte3Wert] == stats.gabArr[c][spalte3Wert]) {
                 d++
             }
         }
-        stats.attendance_low.push(stats.attendance[b])
-
+        stats.gabArr_low.push(stats.gabArr[b])
     }
-    console.log(stats.attendance)
 
-    stats.attendance.sort((a, b) => {
-        return a.miVo_PCT * 100 > b.miVo_PCT * 100 ? 1 : -1;
-    });
+
+    if (document.title === "Attendance - Senate" || document.title === "Attendance - House") {
+        stats.gabArr.sort((a, b) => {
+            return a[spalte3Wert] * 100 > b[spalte3Wert] * 100 ? 1 : -1;
+        });
+    } else {
+        stats.gabArr.sort((a, b) => {
+            return a[spalte3Wert] * 100 < b[spalte3Wert] * 100 ? 1 : -1;
+        });
+    }
     var e = 0;
     for (var b = 0; b < (result.length) * 0.1 + e; b++) {
         for (var c = 1; c < (result.length) * 0.1; c++) {
-            if (stats.attendance[b].miVo_PCT == stats.attendance[c].miVo_PCT) {
+            if (stats.gabArr[b][spalte3Wert] == stats.gabArr[c][spalte3Wert]) {
                 e++
             }
         }
-        stats.attendance_max.push(stats.attendance[b])
-
+        stats.gabArr_max.push(stats.gabArr[b])
     }
 
-
+    var min = stats.gabArr_low;
+    var max = stats.gabArr_max;
     //-------------------- Fill Tables--------------------
-    function fillAttendanceTables(tableID, arrInput) {
+    function fillAttendanceTables(tableID, arrInput, spalte2Wert, spalte3Wert) {
         for (var e = 0; e < arrInput.length; e++) {
             var table = document.getElementById(tableID);
             var row = document.createElement("tr");
@@ -370,103 +342,17 @@ function attendance(members) {
                 arrInput[e].name +
                 "</a>";
             row.appendChild(cell2);
-            cell2.innerHTML = arrInput[e].miVo;
-            if (arrInput[e].miVo_PCT !== "-") {
+            cell2.innerHTML = arrInput[e][spalte2Wert];
+            if (arrInput[e][spalte3Wert] !== "-") {
                 row.appendChild(cell3);
-                cell3.innerHTML = arrInput[e].miVo_PCT / 100 + " %";
+                cell3.innerHTML = arrInput[e][spalte3Wert] / 100 + " %";
             }
         }
     }
-    fillAttendanceTables(table1, stats.attendance_low);
-    fillAttendanceTables(table2, stats.attendance_max);
-    console.log("Attendance Erfolgreich")
+    fillAttendanceTables(table1, min, spalte2Wert, spalte3Wert);
+    fillAttendanceTables(table2, max, spalte2Wert, spalte3Wert);
+    console.log("10% Tables Erfolgreich")
 }
-
-
-
-
-
-//------------Loyalti-------------------------------------------------------------
-
-function loyalty(members) {
-    for (var z = 0; z < stats.mem.length; z++)
-        if (stats.mem[z].voWiPa_PCT !== "-") {
-            stats.loyalty.push(stats.mem[z])
-
-        }
-
-    stats.loyalty.sort((a, b) => {
-        return a.voWiPa_PCT * 100 < b.voWiPa_PCT * 100 ? 1 : -1;
-    });
-    var result = stats.loyalty.reduce((unique, o) => {
-        if (!unique.some(obj => obj.miVo_PCT === o.miVo_PCT)) {
-            unique.push(o);
-        }
-        return unique;
-    }, []);
-    var e = 0
-
-    for (var j = 0; j < ((result.length) / 10) + e; j++) {
-        for (var k = 0; k < ((result.length) / 10) + e; k++) {
-            if (stats.loyalty[j].voWiPa_PCT == stats.loyalty[k].voWiPa_PCT) {
-                e++
-            }
-        }
-        stats.loyalty_low.push(stats.loyalty[j])
-    };
-
-    stats.loyalty.sort((a, b) => {
-        return (a.voWiPa_PCT * 100 < b.voWiPa_PCT * 100) ? 1 : -1
-    })
-
-    var f = 0;
-    for (var c = 0; c < ((result.length) / 10) + f; c++) {
-        for (d = 0; d < ((result.length) / 10) + f; d++) {
-            if (stats.loyalty[c].voWiPa_PCT == stats.loyalty[d].voWiPa_PCT) {
-                e++
-            }
-        }
-        stats.loyalty_max.push(stats.loyalty[c])
-    };
-
-
-    //-------------------- Fill Tables--------------------
-    function fillLoyaltyTables(tableID, arrInput) {
-        for (var e = 0; e < arrInput.length; e++) {
-            var tableLoy = document.getElementById(tableID);
-            var row = document.createElement("tr");
-            var cell1Loy = document.createElement("td");
-            var cell2Loy = document.createElement("td");
-            var cell3Loy = document.createElement("td");
-
-            tableLoy.appendChild(row);
-            row.appendChild(cell1Loy);
-            cell1Loy.innerHTML =
-                "<a href=" +
-                arrInput[e].url +
-                ">" +
-                arrInput[e].name +
-                "</a>";
-            row.appendChild(cell2Loy);
-            cell2Loy.innerHTML = arrInput[e].nuPaVo;
-            row.appendChild(cell3Loy);
-            if (arrInput[e].voWiPa_PCT !== "-") {
-                cell3Loy.innerHTML = (arrInput[e].voWiPa_PCT / 100) + " %"
-            }
-
-        }
-    }
-    fillLoyaltyTables(table1, stats.loyalty_low);
-    fillLoyaltyTables(table2, stats.loyalty_max);
-    console.log("Loyaltiy Erfolgreich")
-}
-
-
-
-
-
-
-
 
 //-----------------------------Filter Functions-------------------------
 //-------create filter Arrays with all States & partys out of JASON-----
@@ -504,30 +390,19 @@ function buildFilter(members) {
 }
 
 function createEvent(puffpuff) {
-
     let elem = document.getElementsByClassName('checkbox');
-
     for (var i = 0; i < elem.length; i++) {
         elem[i].addEventListener("change", function () {
-
             change(puffpuff)
-
         });
     }
-
 }
 
 
 function change(puffpuff) {
     document.getElementById("table").innerHTML = "";
-
-
     let filterArr = [];
     let stateArr = [];
-
-
-
-
     for (var t = 0; t < stats.polPartys.length; t++) { // checks if Party-checkboxes  are checked 
         if (document.getElementById("check" + stats.polPartys[t]).checked) {
             filterArr.push(document.getElementById("check" + stats.polPartys[t]).value);
@@ -539,7 +414,7 @@ function change(puffpuff) {
         }
 
     }
-    console.log(puffpuff);
+
     console.log("selected Partys: " + filterArr);
     console.log("selected States: " + stateArr);
     var filteredMembers = []
@@ -562,7 +437,7 @@ function change(puffpuff) {
         }
 
     }
-    console.log(filteredMembers);
+
     addMemberTable(filteredMembers);
 
 }
