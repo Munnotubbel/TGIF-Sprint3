@@ -1,128 +1,68 @@
-async function getDataSen() {
+var dataPicker = "";
+if (
+  document.title === "Attendance - Senate" ||
+  document.title === "Loyalty - Senate" ||
+  document.title === "Congress 113 - Senate"
+) {
+  dataPicker = "senate";
+} else {
+  dataPicker = "house";
+}
+async function getData() {
+  const response = await fetch(
+    `https://api.propublica.org/congress/v1/115/${dataPicker}/members.json`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
+      }
+    }
+  );
+  var data = await response.json();
+  var members = data.results[0].members;
+  tableFunction(members);
+  var puffpuff = stats.mem;
+
   if (
     document.title === "Congress 113 - Senate" ||
-    document.title === "Attendance - Senate" ||
-    document.title === "Loyalty - Senate"
+    document.title === "Congress 113 - House"
   ) {
-    const response = await fetch(
-      "https://api.propublica.org/congress/v1/115/senate/members.json",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
-        }
-      }
-    );
-    var data = await response.json();
-    var members = data.results[0].members;
-    tableFunction(members);
-    var puffpuff = stats.mem;
-
-    if (
-      document.title === "Congress 113 - Senate" ||
-      document.title === "Congress 113 - House"
-    ) {
-      addMemberTable(stats.mem);
-    }
-
-    if (
-      document.title === "Attendance - Senate" ||
-      document.title === "Attendance - House" ||
-      document.title === "Loyalty - Senate" ||
-      document.title === "Loyalty - House"
-    ) {
-      callGlanceTable(members);
-    }
-
-    if (
-      document.title === "Attendance - Senate" ||
-      document.title === "Attendance - House"
-    ) {
-      attendance("miVo_PCT", "miVo");
-    }
-
-    if (
-      document.title === "Loyalty - Senate" ||
-      document.title === "Loyalty - House"
-    ) {
-      attendance("voWiPa_PCT", "nuPaVo");
-    }
-    if (
-      document.title === "Congress 113 - Senate" ||
-      document.title === "Congress 113 - House"
-    ) {
-      buildFilter(members);
-      createEvent(puffpuff);
-      /* change(members); */
-    }
-    console.log("Fetch Live Erfolgreich Beendet");
-    //------------------------------------
+    addMemberTable(stats.mem);
   }
-}
 
-async function getDataHou() {
   if (
-    document.title === "Congress 113 - House" ||
+    document.title === "Attendance - Senate" ||
     document.title === "Attendance - House" ||
+    document.title === "Loyalty - Senate" ||
     document.title === "Loyalty - House"
   ) {
-    const response = await fetch(
-      "https://api.propublica.org/congress/v1/115/house/members.json",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": "kst4bl191LeYjLbPO06qK3hOs0CEuH9BfnLKCaE5"
-        }
-      }
-    );
-    var data = await response.json();
-    var members = data.results[0].members;
-    tableFunction(members);
-    var puffpuff = stats.mem;
-
-    if (
-      document.title === "Congress 113 - Senate" ||
-      document.title === "Congress 113 - House"
-    ) {
-      addMemberTable(stats.mem);
-    }
-
-    if (
-      document.title === "Attendance - Senate" ||
-      document.title === "Attendance - House" ||
-      document.title === "Loyalty - Senate" ||
-      document.title === "Loyalty - House"
-    ) {
-      callGlanceTable(members);
-    }
-
-    if (
-      document.title === "Attendance - Senate" ||
-      document.title === "Attendance - House"
-    ) {
-      attendance("miVo_PCT", "miVo");
-    }
-
-    if (
-      document.title === "Loyalty - Senate" ||
-      document.title === "Loyalty - House"
-    ) {
-      attendance("voWiPa_PCT", "nuPaVo");
-    }
-    if (
-      document.title === "Congress 113 - Senate" ||
-      document.title === "Congress 113 - House"
-    ) {
-      buildFilter(members);
-      createEvent(puffpuff);
-      /* change(members); */
-    }
-
-    console.log("Fetch Live Erfolgreich Beendet");
-    //------------------------------------
+    callGlanceTable(members);
   }
+
+  if (
+    document.title === "Attendance - Senate" ||
+    document.title === "Attendance - House"
+  ) {
+    attendance("miVo_PCT", "miVo");
+  }
+
+  if (
+    document.title === "Loyalty - Senate" ||
+    document.title === "Loyalty - House"
+  ) {
+    attendance("voWiPa_PCT", "nuPaVo");
+  }
+  if (
+    document.title === "Congress 113 - Senate" ||
+    document.title === "Congress 113 - House"
+  ) {
+    buildFilter(members);
+    createEvent(puffpuff);
+    /* change(members); */
+  }
+  console.log("Fetch Live Erfolgreich Beendet");
+  //------------------------------------
 }
 
 console.log("Name der Seite: " + document.title);
@@ -473,5 +413,4 @@ function change(puffpuff) {
   addMemberTable(filteredMembers);
 }
 
-getDataSen();
-getDataHou();
+getData();
